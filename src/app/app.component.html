@@ -1,0 +1,523 @@
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<div class="container" id="main-container">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-body bg-primary text-white mailbox-widget pb-0">
+          <h2 class="text-white pb-3">Scholar Bowl Question Navigator</h2>
+          <ul class="nav nav-tabs custom-tab border-bottom-0 mt-4" id="myTab" role="tablist">
+            <li class="nav-item">
+              <a (click)="getQuestions()" class="nav-link active" id="inbox-tab" data-toggle="tab" aria-controls="inbox"
+                href="#inbox" role="tab" aria-selected="true">
+                <span class="d-block d-md-none"><i class="ti-email"></i></span>
+                <span class="d-none d-md-block"> ALL QUESTIONS</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a (click)="getFullQuestions()" class="nav-link" id="sent-tab" data-toggle="tab" aria-controls="sent"
+                href="#sent" role="tab" aria-selected="false">
+                <span class="d-block d-md-none"><i class="ti-export"></i></span>
+                <span class="d-none d-md-block">FULL QUESTIONS</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a (click)="getBonusQuestions()" class="nav-link" id="spam-tab" data-toggle="tab" aria-controls="spam"
+                href="#spam" role="tab" aria-selected="false">
+                <span class="d-block d-md-none"><i class="ti-panel"></i></span>
+                <span class="d-none d-md-block">BONUS</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div class="tab-content" id="myTabContent">
+          <div class="tab-pane fade active show" id="inbox" aria-labelledby="inbox-tab" role="tabpanel">
+            <div>
+              <div class="row p-4 no-gutters align-items-center">
+                <div class="col-sm-12 col-md-6">
+                  <h3 class="font-light mb-0"><i class="ti-email mr-2"></i>{{questions.length}} Questions</h3>
+                </div>
+                <div class="col-sm-12 col-md-6">
+                  <ul class="list-inline dl mb-0 float-left float-md-right">
+                    <!-- Add Button -->
+                    <li class="list-inline-item text-info mr-3">
+                      <a (click)="onOpenModal(null, 'add')" data-toggle="modal" data-target="#addQuestionModal"
+                        style="float:right; margin-right:55px">
+                        <button class="btn btn-circle btn-success text-white">
+                          <i class="fa fa-plus"></i>
+                        </button>
+                        <span class="ml-2 font-normal text-dark">Add Question</span>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <!-- AllQuestions list-->
+              <div class="table-responsive">
+                <table class="table email-table no-wrap table-hover v-middle mb-0 font-14">
+                  <tbody>
+                    <!-- row -->
+                    <tr *ngFor="let question of questions">
+                      <td class="pl-3">
+                        <div class="custom-control">
+                          <a (click)="onOpenModal(question, 'view')">
+                            <mat-icon>open_in_new
+                              <input type="button"  data-toggle="modal" data-target="#viewQuestionModal" />
+                              <label class="open-info-button-label" for="cst1">&nbsp;</label>
+                            </mat-icon>
+                          </a>
+                        </div>
+                      </td>
+                      <!-- Title -->
+                      <td>
+                        <span class="mb-0 text-muted">{{question.title}}</span>
+                      </td>
+
+                      <!-- Question Type -->
+                      <td>
+                        <a class="link" href="javascript: void(0)">
+                          <span id="badge-pill" class="badge badge-pill text-white font-medium mr-2"
+                            [ngClass]="{'badge-primary': question.questionType === 'bonus','badge-info': question.questionType === 'full-question'}">{{question.questionType}}</span>
+
+                          <!-- Question Info -->
+                          <span class="text-dark">Packet {{question.packetNumber}}, Year {{question.year}}</span>
+                        </a>
+                      </td>
+                      <td>
+                        <!-- Delete Button -->
+                        <a (click)="onOpenModal(question, 'delete')">
+                          <button class="btn btn-circle btn-danger text-white" data-toggle="modal"
+                            data-target="#deleteQuestionModal">
+                            <i class="fa fa-trash"></i>
+                          </button>
+                          <span class="ml-2 font-normal text-dark">Delete</span>
+                        </a>
+                      </td>
+                      <td>
+                        <!-- Edit Button -->
+                        <a (click)="onOpenModal(question, 'edit')" data-toggle="modal"
+                          data-target="#updateQuestionModal">
+                          <button class="btn btn-circle btn-warning text-white">
+                            <i class="fa fa-pencil"></i>
+                          </button>
+                          <span class="ml-2 font-normal text-dark">Edit</span>
+                        </a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="tab-pane fade" id="sent" aria-labelledby="sent-tab" role="tabpanel">
+            <div>
+              <div class="row p-4 no-gutters align-items-center">
+                <div class="col-sm-12 col-md-6">
+                  <h3 class="font-light mb-0"><i class="ti-email mr-2"></i>{{questions.length}} Full Questions</h3>
+                </div>
+                <div class="col-sm-12 col-md-6">
+                  <ul class="list-inline dl mb-0 float-left float-md-right">
+                    <!-- Add Button -->
+                    <li class="list-inline-item text-info mr-3">
+                      <a (click)="onOpenModal(null, 'add')" data-toggle="modal" data-target="#addQuestionModal"
+                        style="float:right; margin-right:55px">
+                        <button class="btn btn-circle btn-success text-white">
+                          <i class="fa fa-plus"></i>
+                        </button>
+                        <span class="ml-2 font-normal text-dark">Add Question</span>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <!-- Full Questions list-->
+              <div class="table-responsive">
+                <table class="table email-table no-wrap table-hover v-middle mb-0 font-14">
+                  <tbody>
+                    <!-- row -->
+                    <tr *ngFor="let question of questions">
+                      <td class="pl-3">
+                        <div class="custom-control custom-checkbox">
+                          <input type="checkbox" class="custom-control-input" id="cst1" />
+                          <label class="custom-control-label" for="cst1">&nbsp;</label>
+                        </div>
+                      </td>
+                      <!-- Title -->
+                      <td>
+                        <span class="mb-0 text-muted">{{question.title}}</span>
+                      </td>
+
+                      <!-- Question Type -->
+                      <td>
+                        <a class="link" href="javascript: void(0)">
+                          <span
+                            class="badge badge-pill text-white font-medium badge-info mr-2">{{question.questionType}}</span>
+
+                          <!-- Question Info -->
+                          <span class="text-dark">Packet {{question.packetNumber}}, Year {{question.year}}</span>
+                        </a>
+                      </td>
+                      <td>
+                        <!-- Delete Button -->
+                        <a (click)="onOpenModal(question, 'delete')">
+                          <button class="btn btn-circle btn-danger text-white" data-toggle="modal"
+                            data-target="#deleteQuestionModal">
+                            <i class="fa fa-trash"></i>
+                          </button>
+                          <span class="ml-2 font-normal text-dark">Delete</span>
+                        </a>
+                      </td>
+                      <td>
+                        <!-- Edit Button -->
+                        <a (click)="onOpenModal(question, 'edit')" data-toggle="modal"
+                          data-target="#updateQuestionModal">
+                          <button class="btn btn-circle btn-warning text-white">
+                            <i class="fa fa-pencil"></i>
+                          </button>
+                          <span class="ml-2 font-normal text-dark">Edit</span>
+                        </a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="tab-pane fade" id="spam" aria-labelledby="spam-tab" role="tabpanel">
+            <div>
+              <div class="row p-4 no-gutters align-items-center">
+                <div class="col-sm-12 col-md-6">
+                  <h3 class="font-light mb-0"><i class="ti-email mr-2"></i>{{questions.length}} Bonus Questions</h3>
+                </div>
+                <div class="col-sm-12 col-md-6">
+                  <ul class="list-inline dl mb-0 float-left float-md-right">
+                    <!-- Add Button -->
+                    <li class="list-inline-item text-info mr-3">
+                      <a (click)="onOpenModal(null, 'add')" data-toggle="modal" data-target="#addQuestionModal"
+                        style="float:right; margin-right:55px">
+                        <button class="btn btn-circle btn-success text-white">
+                          <i class="fa fa-plus"></i>
+                        </button>
+                        <span class="ml-2 font-normal text-dark">Add Question</span>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <!-- Bonus Questions list-->
+              <div class="table-responsive">
+                <table class="table email-table no-wrap table-hover v-middle mb-0 font-14">
+                  <tbody>
+                    <!-- row -->
+                    <tr *ngFor="let question of questions">
+                      <td class="pl-3">
+                        <div class="custom-control custom-checkbox">
+                          <input type="checkbox" class="custom-control-input" id="cst1" />
+                          <label class="custom-control-label" for="cst1">&nbsp;</label>
+                        </div>
+                      </td>
+                      <!-- Title -->
+                      <td>
+                        <span class="mb-0 text-muted">{{question.title}}</span>
+                      </td>
+
+                      <!-- Question Type -->
+                      <td>
+                        <a class="link" href="javascript: void(0)">
+                          <span
+                            class="badge badge-pill text-white font-medium badge-primary mr-2">{{question.questionType}}</span>
+
+                          <!-- Question Info -->
+                          <span class="text-dark">Packet {{question.packetNumber}}, Year {{question.year}}</span>
+                        </a>
+                      </td>
+                      <td>
+                        <!-- Delete Button -->
+                        <a (click)="onOpenModal(question, 'delete')">
+                          <button class="btn btn-circle btn-danger text-white" data-toggle="modal"
+                            data-target="#deleteQuestionModal">
+                            <i class="fa fa-trash"></i>
+                          </button>
+                          <span class="ml-2 font-normal text-dark">Delete</span>
+                        </a>
+                      </td>
+                      <td>
+                        <!-- Edit Button -->
+                        <a (click)="onOpenModal(question, 'edit')" data-toggle="modal"
+                          data-target="#updateQuestionModal">
+                          <button class="btn btn-circle btn-warning text-white">
+                            <i class="fa fa-pencil"></i>
+                          </button>
+                          <span class="ml-2 font-normal text-dark">Edit</span>
+                        </a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add Question Modal -->
+<div class="modal fade" id="addQuestionModal" tabindex="-1" role="dialog" aria-labelledby="addQuestionModalLabel"
+  aria-hidden="false">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addQuestioneModalLabel">Add Question</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form #addForm="ngForm" (ngSubmit)="onAddQuestion(addForm)">
+          <div class="form-group">
+            <label for="name">Title</label>
+            <input type="text" ngModel name="title" class="form-control" id="title" placeholder="Title" required>
+          </div>
+          <div class="form-group">
+            <label for="email">Year</label>
+            <input type="email" ngModel name="year" class="form-control" id="year" placeholder="Year" required>
+          </div>
+          <div class="form-group">
+            <label for="phone">Packet Number</label>
+            <input type="text" ngModel name="packetNumber" class="form-control" id="packetNumber"
+              placeholder="Packet number" required>
+          </div>
+          <div class="form-group">
+            <label for="phone">Question Number</label>
+            <input type="text" ngModel name="questionNumber" class="form-control" id="questionNumber"
+              placeholder="Question number" required>
+          </div>
+          <div class="form-group">
+            <label for="phone">Question Type</label><br>
+            <input type="text" ngModel name="questionType" id="questionType" list="typeOptions">
+            <datalist id="typeOptions">
+              <option value="bonus">
+              <option value="full-question">
+            </datalist>
+          </div>
+          <div class="form-group">
+            <label for="phone">Bonus Letter</label><br>
+            <input type="text" ngModel name="bonusLetter" id="bonusLetter" list="typeOptions">
+            <datalist id="typeOptions">
+              <option value="A">
+              <option value="B">
+              <option value="C">
+              <option value="None">
+            </datalist>
+          </div>
+          <div class="form-group">
+            <label for="phone">Category</label>
+            <input type="text" ngModel name="category" class="form-control" id="category" placeholder="Category"
+              required>
+          </div>
+          <div class="form-group">
+            <label for="phone">Point Value</label>
+            <input type="text" ngModel name="pointValue" class="form-control" id="pointValue" placeholder="Point value"
+              required>
+          </div>
+          <div class="form-group">
+            <label for="phone">Initial Question (Bonus)</label>
+            <input type="text" ngModel name="bonusBeginningQuestion" class="form-control" id="bonusBeginningQuestion"
+              placeholder="Bonus Beginning Question">
+          </div>
+          <div class="form-group">
+            <label for="phone">Question Body</label>
+            <input type="text" ngModel name="questionBody" class="form-control" id="questionBody"
+              placeholder="Question body" required>
+          </div>
+          <div class="form-group">
+            <label for="phone">Answer</label>
+            <input type="text" ngModel name="answer" class="form-control" id="answer" placeholder="Answer" required>
+          </div>
+          <div class="modal-footer">
+            <button type="button" id="add-question-form" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button [disabled]="addForm.invalid" type="submit" class="btn btn-primary">Save changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Question Modal -->
+<div class="modal fade" id="updateQuestionModal" tabindex="-1" role="dialog" aria-labelledby="questionEditModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="updateQuestionModalLabel">Edit Question {{updateQuestion?.id}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form #editForm="ngForm">
+          <input type="hidden" ngModel="{{updateQuestion?.id}}" name="id" class="form-control" id="id"
+            placeholder="Email">
+          <div class="form-group">
+            <label for="name">Title</label>
+            <input type="text" ngModel="{{updateQuestion?.title}}" name="title" class="form-control" id="title"
+              placeholder="Title" required>
+          </div>
+          <div class="form-group">
+            <label for="email">Year</label>
+            <input type="email" ngModel="{{updateQuestion?.year}}" name="year" class="form-control" id="year"
+              placeholder="Year" required>
+          </div>
+          <div class="form-group">
+            <label for="phone">Packet Number</label>
+            <input type="text" ngModel="{{updateQuestion?.packetNumber}}" name="packetNumber" class="form-control"
+              id="packetNumber" placeholder="Packet number" required>
+          </div>
+          <div class="form-group">
+            <label for="phone">Question Number</label>
+            <input type="text" ngModel="{{updateQuestion?.questionNumber}}" name="questionNumber" class="form-control"
+              id="questionNumber" placeholder="Question number" required>
+          </div>
+          <div class="form-group">
+            <label for="phone">Question Type</label><br>
+            <input type="text" ngModel="{{updateQuestion?.questionType}}" name="questionType" id="questionType"
+              list="typeOptions">
+            <datalist id="typeOptions">
+              <option value="bonus">
+              <option value="full-question">
+            </datalist>
+          </div>
+          <div class="form-group">
+            <label for="phone">Bonus Letter</label><br>
+            <input type="text" ngModel="{{updateQuestion?.bonusLetter}}" name="bonusLetter" id="bonusLetter"
+              list="typeOptions">
+            <datalist id="typeOptions">
+              <option value="A">
+              <option value="B">
+              <option value="C">
+              <option value="None">
+            </datalist>
+          </div>
+          <div class="form-group">
+            <label for="phone">Category</label>
+            <input type="text" ngModel="{{updateQuestion?.category}}" name="category" class="form-control" id="category"
+              placeholder="Category" required>
+          </div>
+          <div class="form-group">
+            <label for="phone">Point Value</label>
+            <input type="text" ngModel="{{updateQuestion?.pointValue}}" name="pointValue" class="form-control"
+              id="pointValue" placeholder="Point value" required>
+          </div>
+          <div class="form-group">
+            <label for="phone">Initial Question (Bonus)</label>
+            <input type="text" ngModel="{{updateQuestion?.bonusBeginningQuestion}}" name="bonusBeginningQuestion"
+              class="form-control" id="bonusBeginningQuestion" placeholder="Bonus Beginning Question">
+          </div>
+          <div class="form-group">
+            <label for="phone">Question Body</label>
+            <input type="text" ngModel="{{updateQuestion?.questionBody}}" name="questionBody" class="form-control"
+              id="questionBody" placeholder="Question body" required>
+          </div>
+          <div class="form-group">
+            <label for="phone">Answer</label>
+            <input type="text" ngModel="{{updateQuestion?.answer}}" name="answer" class="form-control" id="answer"
+              placeholder="Answer" required>
+          </div>
+          <div class="modal-footer">
+            <button type="button" id="edit-question-form" data-dismiss="modal" class="btn btn-secondary">Close</button>
+            <button (click)="onUpdateQuestion(editForm.value)" data-dismiss="modal" class="btn btn-primary">Save
+              changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteQuestionModal" tabindex="-1" role="dialog" aria-labelledby="deleteModelLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModelLabel">Delete Question</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete<b> Q{{deleteQuestion?.questionNumber}}  {{deleteQuestion?.year}} {{deleteQuestion?.title}} Packet {{deleteQuestion?.packetNumber}}</b>?</p>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+          <button (click)="onDeleteQuestion(deleteQuestion?.id)" class="btn btn-danger" data-dismiss="modal">Yes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- View Modal -->
+<div class="modal fade" id="viewQuestionModal" tabindex="-1" role="dialog" aria-labelledby="viewModelLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="viewModelLabel">View Question</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <table>
+          <tbody>
+            <tr>
+              <td>
+                <p><b> Q{{viewQuestion?.questionNumber}}  {{viewQuestion?.year}} {{viewQuestion?.title}} Packet {{viewQuestion?.packetNumber}}</b></p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p><b>Question: </b> {{viewQuestion?.category}} | {{viewQuestion?.questionType}} | {{viewQuestion?.bonusLetter}}</p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p>{{viewQuestion?.bonusBeginningQuestion}}</p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p>{{viewQuestion?.questionBody}}</p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p><b>Answer: </b> {{viewQuestion?.pointValue}} Points</p>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <p>{{viewQuestion?.answer}}</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Notification for no employees -->
+<div *ngIf="questions?.length == 0" class="col-lg-12 col-md-12 col-xl-12">
+  <div class="alert alert-info" role="alert">
+    <h4 class="alert-heading">NO QUESTIONS!</h4>
+    <p>No Employees were found.</p>
+  </div>
+</div>
