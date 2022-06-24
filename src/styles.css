@@ -13,6 +13,10 @@ a {
     color:gray;
 }
 
+.modal {
+    overflow-y: scroll;
+}
+
 .card {
     position: relative;
     display: flex;
@@ -45,5 +49,14 @@ a {
 .font-light {
     font-weight: 300;
 }
+
+#viewQuestionModal {
+    z-index: 9997;
+}
+
+#viewPacketModal {
+    z-index: 9997;
+}
+
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

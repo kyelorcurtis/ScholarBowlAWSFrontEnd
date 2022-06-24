@@ -28,7 +28,18 @@
                 <span class="d-none d-md-block">BONUS</span>
               </a>
             </li>
+            <li class="nav-item">
+              <a (click)="getPackets()" class="nav-link" id="packet-tab" data-toggle="tab" aria-controls="packet"
+                href="#packet" role="tab" aria-selected="false">
+                <span class="d-block d-md-none"><i class="ti-panel"></i></span>
+                <span class="d-none d-md-block">PACKETS</span>
+              </a>
+            </li>
           </ul>
+          <form class="form-inline my-2 my-lg-0" style="float:right; margin-right:25px">
+            <input type="search" (ngModelChange)="searchQuestions(key.value)" #key="ngModel" ngModel
+              name="key" id="searchName" class="form-control mr-sm-2" placeholder="Search Questions..." required>
+          </form>
         </div>
         <div class="tab-content" id="myTabContent">
           <div class="tab-pane fade active show" id="inbox" aria-labelledby="inbox-tab" role="tabpanel">
@@ -42,7 +53,7 @@
                     <!-- Add Button -->
                     <li class="list-inline-item text-info mr-3">
                       <a (click)="onOpenModal(null, 'add')" data-toggle="modal" data-target="#addQuestionModal"
-                        style="float:right; margin-right:55px">
+                        style="float:right; margin-right:60px">
                         <button class="btn btn-circle btn-success text-white">
                           <i class="fa fa-plus"></i>
                         </button>
@@ -75,7 +86,8 @@
 
                       <!-- Question Type -->
                       <td>
-                        <a class="link" href="javascript: void(0)">
+                        <a (click)="searchPackets(question.packetNumber)" class="nav-link" id="packet-tab" data-toggle="tab" aria-controls="packet"
+                        href="#packet" role="tab" aria-selected="false">
                           <span id="badge-pill" class="badge badge-pill text-white font-medium mr-2"
                             [ngClass]="{'badge-primary': question.questionType === 'bonus','badge-info': question.questionType === 'full-question'}">{{question.questionType}}</span>
 
@@ -120,7 +132,7 @@
                     <!-- Add Button -->
                     <li class="list-inline-item text-info mr-3">
                       <a (click)="onOpenModal(null, 'add')" data-toggle="modal" data-target="#addQuestionModal"
-                        style="float:right; margin-right:55px">
+                        style="float:right; margin-right:60px">
                         <button class="btn btn-circle btn-success text-white">
                           <i class="fa fa-plus"></i>
                         </button>
@@ -137,9 +149,13 @@
                     <!-- row -->
                     <tr *ngFor="let question of questions">
                       <td class="pl-3">
-                        <div class="custom-control custom-checkbox">
-                          <input type="checkbox" class="custom-control-input" id="cst1" />
-                          <label class="custom-control-label" for="cst1">&nbsp;</label>
+                        <div class="custom-control">
+                          <a (click)="onOpenModal(question, 'view')">
+                            <mat-icon>open_in_new
+                              <input type="button"  data-toggle="modal" data-target="#viewQuestionModal" />
+                              <label class="open-info-button-label" for="cst1">&nbsp;</label>
+                            </mat-icon>
+                          </a>
                         </div>
                       </td>
                       <!-- Title -->
@@ -149,7 +165,8 @@
 
                       <!-- Question Type -->
                       <td>
-                        <a class="link" href="javascript: void(0)">
+                        <a (click)="searchPackets(question.packetNumber)" class="nav-link" id="packet-tab" data-toggle="tab" aria-controls="packet"
+                        href="#packet" role="tab" aria-selected="false">
                           <span
                             class="badge badge-pill text-white font-medium badge-info mr-2">{{question.questionType}}</span>
 
@@ -194,7 +211,7 @@
                     <!-- Add Button -->
                     <li class="list-inline-item text-info mr-3">
                       <a (click)="onOpenModal(null, 'add')" data-toggle="modal" data-target="#addQuestionModal"
-                        style="float:right; margin-right:55px">
+                        style="float:right; margin-right:60px">
                         <button class="btn btn-circle btn-success text-white">
                           <i class="fa fa-plus"></i>
                         </button>
@@ -211,9 +228,13 @@
                     <!-- row -->
                     <tr *ngFor="let question of questions">
                       <td class="pl-3">
-                        <div class="custom-control custom-checkbox">
-                          <input type="checkbox" class="custom-control-input" id="cst1" />
-                          <label class="custom-control-label" for="cst1">&nbsp;</label>
+                        <div class="custom-control">
+                          <a (click)="onOpenModal(question, 'view')">
+                            <mat-icon>open_in_new
+                              <input type="button"  data-toggle="modal" data-target="#viewQuestionModal" />
+                              <label class="open-info-button-label" for="cst1">&nbsp;</label>
+                            </mat-icon>
+                          </a>
                         </div>
                       </td>
                       <!-- Title -->
@@ -223,7 +244,8 @@
 
                       <!-- Question Type -->
                       <td>
-                        <a class="link" href="javascript: void(0)">
+                        <a (click)="searchPackets(question.packetNumber)" class="nav-link" id="packet-tab" data-toggle="tab" aria-controls="packet"
+                        href="#packet" role="tab" aria-selected="false">
                           <span
                             class="badge badge-pill text-white font-medium badge-primary mr-2">{{question.questionType}}</span>
 
@@ -257,6 +279,79 @@
               </div>
             </div>
           </div>
+          <div class="tab-pane fade" id="packet" aria-labelledby="packet-tab" role="tabpanel">
+            <div>
+              <div class="row p-4 no-gutters align-items-center">
+                <div class="col-sm-12 col-md-6">
+                  <h3 class="font-light mb-0"><i class="ti-email mr-2"></i>{{packets.length}} Packets</h3>
+                </div>
+                <div class="col-sm-12 col-md-6">
+                  <ul class="list-inline dl mb-0 float-left float-md-right">
+                    <!-- Add Button -->
+                    <li class="list-inline-item text-info mr-3">
+                      <a (click)="onOpenPacketModal(null, 'add')" data-toggle="modal" data-target="#addPacketModal"
+                        style="float:right; margin-right:60px">
+                        <button class="btn btn-circle btn-success text-white">
+                          <i class="fa fa-plus"></i>
+                        </button>
+                        <span class="ml-2 font-normal text-dark">Add Packet</span>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <!-- Packet list-->
+              <div class="table-responsive">
+                <table class="table email-table no-wrap table-hover v-middle mb-0 font-14">
+                  <tbody>
+                    <!-- row -->
+                    <tr *ngFor="let packet of packets">
+                      <td class="pl-3">
+                        <div class="custom-control">
+                          <a (click)="onOpenPacketModal(packet, 'view')">
+                            <mat-icon>open_in_new
+                              <input type="button"  data-toggle="modal" data-target="#viewPacketModal" />
+                              <label class="open-info-button-label" for="cst1">&nbsp;</label>
+                            </mat-icon>
+                          </a>
+                        </div>
+                      </td>
+                      <!-- Title -->
+                      <td>
+                        <span class="mb-0 text-muted">{{packet.title}}</span>
+                      </td>
+
+                      <!-- Packet Type -->
+                      <td>
+                          <!-- Packet Info -->
+                          <span class="text-dark">Packet {{packet.packetNumber}}, Year {{packet.year}}</span>
+                      </td>
+                      <td>
+                        <!-- Delete Button -->
+                        <a (click)="onOpenPacketModal(packet, 'delete')">
+                          <button class="btn btn-circle btn-danger text-white" data-toggle="modal"
+                            data-target="#deletePacketModal">
+                            <i class="fa fa-trash"></i>
+                          </button>
+                          <span class="ml-2 font-normal text-dark">Delete</span>
+                        </a>
+                      </td>
+                      <td>
+                        <!-- Edit Button -->
+                        <a (click)="onOpenPacketModal(packet, 'edit')" data-toggle="modal"
+                          data-target="#updatePacketModal">
+                          <button class="btn btn-circle btn-warning text-white">
+                            <i class="fa fa-pencil"></i>
+                          </button>
+                          <span class="ml-2 font-normal text-dark">Edit</span>
+                        </a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -277,35 +372,27 @@
       <div class="modal-body">
         <form #addForm="ngForm" (ngSubmit)="onAddQuestion(addForm)">
           <div class="form-group">
-            <label for="name">Title</label>
-            <input type="text" ngModel name="title" class="form-control" id="title" placeholder="Title" required>
+            <label for="phone">Associated Packet</label><br>
+            <input type="text" ngModel name="packetId" id="packetId" list="typeOptionsPackets" placeholder="Required" required>
+            <datalist id="typeOptionsPackets">
+              <option *ngFor="let packet of packets" value="{{packet.id}}">{{packet.year}} {{packet.title}} {{packet.packetNumber}}</option>
+            </datalist>
           </div>
-          <div class="form-group">
-            <label for="email">Year</label>
-            <input type="email" ngModel name="year" class="form-control" id="year" placeholder="Year" required>
-          </div>
-          <div class="form-group">
-            <label for="phone">Packet Number</label>
-            <input type="text" ngModel name="packetNumber" class="form-control" id="packetNumber"
-              placeholder="Packet number" required>
-          </div>
-          <div class="form-group">
-            <label for="phone">Question Number</label>
-            <input type="text" ngModel name="questionNumber" class="form-control" id="questionNumber"
-              placeholder="Question number" required>
-          </div>
+          <input type="hidden" ngModel="None" name="title" class="form-control" id="title" placeholder="Email">
+          <input type="hidden" ngModel="None" name="packetNumber" class="form-control" id="packetNumber" placeholder="Email">
+          <input type="hidden" ngModel="None" name="year" class="form-control" id="year" placeholder="Email">
           <div class="form-group">
             <label for="phone">Question Type</label><br>
-            <input type="text" ngModel name="questionType" id="questionType" list="typeOptions">
+            <input type="text" ngModel name="questionType" id="questionType" list="typeOptions" placeholder="Required" required>
             <datalist id="typeOptions">
               <option value="bonus">
               <option value="full-question">
             </datalist>
           </div>
           <div class="form-group">
-            <label for="phone">Bonus Letter</label><br>
-            <input type="text" ngModel name="bonusLetter" id="bonusLetter" list="typeOptions">
-            <datalist id="typeOptions">
+            <label for="letter">Bonus Letter (Bonus)</label><br>
+            <input type="text" ngModel name="bonusLetter" id="bonusLetter" list="typeOptionsLetter"  placeholder="Required" required>
+            <datalist id="typeOptionsLetter">
               <option value="A">
               <option value="B">
               <option value="C">
@@ -313,28 +400,33 @@
             </datalist>
           </div>
           <div class="form-group">
+            <label for="phone">Question Number</label>
+            <input type="text" ngModel name="questionNumber" class="form-control" id="questionNumber"
+              placeholder="Required: Number" required>
+          </div>
+          <div class="form-group">
             <label for="phone">Category</label>
-            <input type="text" ngModel name="category" class="form-control" id="category" placeholder="Category"
+            <input type="text" ngModel name="category" class="form-control" id="category" placeholder="Required"
               required>
           </div>
           <div class="form-group">
             <label for="phone">Point Value</label>
-            <input type="text" ngModel name="pointValue" class="form-control" id="pointValue" placeholder="Point value"
+            <input type="text" ngModel name="pointValue" class="form-control" id="pointValue" placeholder="Required: Number"
               required>
           </div>
           <div class="form-group">
             <label for="phone">Initial Question (Bonus)</label>
             <input type="text" ngModel name="bonusBeginningQuestion" class="form-control" id="bonusBeginningQuestion"
-              placeholder="Bonus Beginning Question">
+              placeholder="(Bonus Only: Not Required)">
           </div>
           <div class="form-group">
             <label for="phone">Question Body</label>
             <input type="text" ngModel name="questionBody" class="form-control" id="questionBody"
-              placeholder="Question body" required>
+              placeholder="Required" required>
           </div>
           <div class="form-group">
             <label for="phone">Answer</label>
-            <input type="text" ngModel name="answer" class="form-control" id="answer" placeholder="Answer" required>
+            <input type="text" ngModel name="answer" class="form-control" id="answer" placeholder="Required" required>
           </div>
           <div class="modal-footer">
             <button type="button" id="add-question-form" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -359,28 +451,20 @@
       </div>
       <div class="modal-body">
         <form #editForm="ngForm">
+          <div class="form-group">
+            <label for="phone">Associated Packet</label><br>
+            <input type="text" ngModel="{{updateQuestion?.packetId}}" name="packetId" id="packetId" list="typeOptionsPackets" placeholder="Required" required>
+            <datalist id="typeOptionsPackets">
+              <option *ngFor="let packet of packets" value="{{packet.id}}">{{packet.year}} {{packet.title}} {{packet.packetNumber}}</option>
+            </datalist>
+          </div>
+          <input type="hidden" ngModel="None" name="title" class="form-control" id="title" placeholder="Email">
+          <input type="hidden" ngModel="None" name="packetNumber" class="form-control" id="packetNumber" placeholder="Email">
+          <input type="hidden" ngModel="None" name="year" class="form-control" id="year" placeholder="Email">
           <input type="hidden" ngModel="{{updateQuestion?.id}}" name="id" class="form-control" id="id"
             placeholder="Email">
-          <div class="form-group">
-            <label for="name">Title</label>
-            <input type="text" ngModel="{{updateQuestion?.title}}" name="title" class="form-control" id="title"
-              placeholder="Title" required>
-          </div>
-          <div class="form-group">
-            <label for="email">Year</label>
-            <input type="email" ngModel="{{updateQuestion?.year}}" name="year" class="form-control" id="year"
-              placeholder="Year" required>
-          </div>
-          <div class="form-group">
-            <label for="phone">Packet Number</label>
-            <input type="text" ngModel="{{updateQuestion?.packetNumber}}" name="packetNumber" class="form-control"
-              id="packetNumber" placeholder="Packet number" required>
-          </div>
-          <div class="form-group">
-            <label for="phone">Question Number</label>
-            <input type="text" ngModel="{{updateQuestion?.questionNumber}}" name="questionNumber" class="form-control"
-              id="questionNumber" placeholder="Question number" required>
-          </div>
+            <input type="hidden" ngModel="{{updateQuestion?.packetId}}" name="packetId" class="form-control" id="packetId"
+              placeholder="Email">
           <div class="form-group">
             <label for="phone">Question Type</label><br>
             <input type="text" ngModel="{{updateQuestion?.questionType}}" name="questionType" id="questionType"
@@ -400,6 +484,11 @@
               <option value="C">
               <option value="None">
             </datalist>
+          </div>
+          <div class="form-group">
+            <label for="phone">Question Number</label>
+            <input type="text" ngModel="{{updateQuestion?.questionNumber}}" name="questionNumber" class="form-control"
+              id="questionNumber" placeholder="Question number" required>
           </div>
           <div class="form-group">
             <label for="phone">Category</label>
@@ -437,7 +526,7 @@
   </div>
 </div>
 
-<!-- Delete Modal -->
+<!-- Delete Question Modal -->
 <div class="modal fade" id="deleteQuestionModal" tabindex="-1" role="dialog" aria-labelledby="deleteModelLabel"
   aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -459,8 +548,7 @@
   </div>
 </div>
 
-
-<!-- View Modal -->
+<!-- View Question Modal -->
 <div class="modal fade" id="viewQuestionModal" tabindex="-1" role="dialog" aria-labelledby="viewModelLabel"
   aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -514,10 +602,147 @@
   </div>
 </div>
 
-<!-- Notification for no employees -->
+<!-- Notification for no questions -->
 <div *ngIf="questions?.length == 0" class="col-lg-12 col-md-12 col-xl-12">
   <div class="alert alert-info" role="alert">
     <h4 class="alert-heading">NO QUESTIONS!</h4>
-    <p>No Employees were found.</p>
+    <p>No Questions were found.</p>
+  </div>
+</div>
+
+<!-- Edit Packet Modal -->
+<div class="modal fade" id="updatePacketModal" tabindex="-1" role="dialog" aria-labelledby="packetEditModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="updatePacketModalLabel">Edit Packet {{updatePacket?.id}}</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form #editQuestionForm="ngForm">
+          <input type="hidden" ngModel="{{updatePacket?.id}}" name="id" class="form-control" id="id"
+            placeholder="Email">
+          <div class="form-group">
+            <label for="name">Title</label>
+            <input type="text" ngModel="{{updatePacket?.title}}" name="title" class="form-control" id="title"
+              placeholder="Title" required>
+          </div>
+          <div class="form-group">
+            <label for="email">Year</label>
+            <input type="email" ngModel="{{updatePacket?.year}}" name="year" class="form-control" id="year"
+              placeholder="Year" required>
+          </div>
+          <div class="form-group">
+            <label for="phone">Packet Number</label>
+            <input type="text" ngModel="{{updatePacket?.packetNumber}}" name="packetNumber" class="form-control"
+              id="packetNumber" placeholder="Packet number" required>
+          </div>
+          <div class="modal-footer">
+            <button type="button" id="edit-packet-form" data-dismiss="modal" class="btn btn-secondary">Close</button>
+            <button (click)="onUpdatePacket(editQuestionForm.value)" data-dismiss="modal" class="btn btn-primary">Save
+              changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Packet Modal -->
+<div class="modal fade" id="deletePacketModal" tabindex="-1" role="dialog" aria-labelledby="deleteModelLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModelLabel">Delete Packet</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete<b> {{deletePacket?.year}} {{deletePacket?.title}} Packet {{deletePacket?.packetNumber}}</b>?</p>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+          <button (click)="onDeletePacket(deletePacket?.id)" class="btn btn-danger" data-dismiss="modal">Yes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add Question Modal -->
+<div class="modal fade" id="addPacketModal" tabindex="-1" role="dialog" aria-labelledby="addPacketModalLabel"
+  aria-hidden="false">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addPacketeModalLabel">Add Packet</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form #addPacketForm="ngForm" (ngSubmit)="onAddPacket(addPacketForm)">
+          <div class="form-group">
+            <label for="name">Title</label>
+            <input type="text" ngModel name="title" class="form-control" id="title" placeholder="Title" required>
+          </div>
+          <div class="form-group">
+            <label for="email">Year</label>
+            <input type="email" ngModel name="year" class="form-control" id="year" placeholder="Year" required>
+          </div>
+          <div class="form-group">
+            <label for="phone">Packet Number</label>
+            <input type="text" ngModel name="packetNumber" class="form-control" id="packetNumber"
+              placeholder="Packet number" required>
+          </div>
+          <div class="modal-footer">
+            <button type="button" id="add-packet-form" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button [disabled]="addPacketForm.invalid" type="submit" class="btn btn-primary">Save changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- View Packet Modal -->
+<div class="modal fade" id="viewPacketModal" tabindex="-1" role="dialog" aria-labelledby="viewModelLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="viewModelLabel">View Packet <b>{{viewPacket?.year}} {{viewPacket?.title}} Packet {{viewPacket?.packetNumber}}</b></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <table>
+          <tbody>
+            <tr *ngFor="let question of questions">
+              <td>
+                <a data-dismiss="modal" (click)="onOpenModal(question, 'view')">
+                  <mat-icon>open_in_new
+                    <input type="button" data-toggle="modal" data-target="#viewQuestionModal" />
+                    <label class="open-info-button-label" for="cst1">&nbsp;</label>
+                  </mat-icon>
+                </a>
+              </td>
+              <td>
+                <p><b>Question {{question?.questionNumber}}: </b> {{question?.questionType}} | {{question?.category}} | {{question?.bonusLetter}}</p>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="modal-footer">
+          <button type="button" data-dismiss="modal" (click)="onOpenModal(null, 'add')" class="btn btn-success" data-toggle="modal" data-target="#addQuestionModal">Add Question</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
   </div>
 </div>

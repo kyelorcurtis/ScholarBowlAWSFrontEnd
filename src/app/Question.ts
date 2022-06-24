@@ -11,4 +11,5 @@ export interface Question{
     questionType: string;
     year: number;
     title: string;
+    packetId: number;
 }

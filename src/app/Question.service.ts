@@ -20,6 +20,14 @@ export class QuestionService {
         return this.http.get<Question[]>(`${this.apiServerUrl}/api/questions`);
     }
 
+    public getQuestionsByPacket(packetId: number): Observable<Question[]> {
+        return this.http.get<Question[]>(`${this.apiServerUrl}/api/questions/packetId/${packetId}`);
+    }
+
+    public getPackets(): Observable<Question[]> {
+        return this.http.get<Question[]>(`${this.apiServerUrl}/api/packets`);
+    }
+
     public getBonusQuestions(): Observable<Question[]> {
         return this.http.get<Question[]>(`${this.apiServerUrl}/api/questions/type/bonus`);
     }
@@ -29,7 +37,6 @@ export class QuestionService {
     }
 
     public updateQuestion(question : Question, questionId: number): Observable<Question> {
-        console.log('Here is the id', question.id)
         return this.http.put<Question>(`${this.apiServerUrl}/api/questions/update/${questionId}`, question);
     }
 
