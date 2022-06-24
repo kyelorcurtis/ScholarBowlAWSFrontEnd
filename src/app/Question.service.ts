@@ -8,7 +8,7 @@ import { environment } from "src/environments/environment";
     providedIn: 'root'
 })
 export class QuestionService {
-    private apiServerUrl = environment.apiBaseUrl;
+    private apiServerUrl: String = 'http://scholarbowlquestionsspringboot-env.eba-ygnaamx8.us-east-1.elasticbeanstalk.com';
 
     constructor(private http: HttpClient) { }
 
