@@ -297,6 +297,16 @@
                         <span class="ml-2 font-normal text-dark">Add Packet</span>
                       </a>
                     </li>
+                    <!-- Upload PDF Button -->
+                    <li class="list-inline-item text-info mr-3">
+                      <a (click)="onOpenPacketModal(null, 'upload')" data-toggle="modal" data-target="#uploadPacketModal"
+                        style="float:right; margin-right:30px">
+                        <button class="btn btn-circle btn-primary text-white">
+                          <i class="fa fa-upload"></i>
+                        </button>
+                        <span class="ml-2 font-normal text-dark">Upload NAQT Packet PDF</span>
+                      </a>
+                    </li>
                   </ul>
                 </div>
               </div>
@@ -673,7 +683,7 @@
   </div>
 </div>
 
-<!-- Add Question Modal -->
+<!-- Add Packet Modal -->
 <div class="modal fade" id="addPacketModal" tabindex="-1" role="dialog" aria-labelledby="addPacketModalLabel"
   aria-hidden="false">
   <div class="modal-dialog" role="document">
@@ -701,7 +711,38 @@
           </div>
           <div class="modal-footer">
             <button type="button" id="add-packet-form" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button"  class="btn btn-circle btn-success text-white">
+              <i class="fa fa-plus"></i>
+              Add Question
+            </button>
             <button [disabled]="addPacketForm.invalid" type="submit" class="btn btn-primary">Save changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Upload Packet Modal -->
+<div class="modal fade" id="uploadPacketModal" tabindex="-1" role="dialog" aria-labelledby="uploadPacketModalLabel"
+  aria-hidden="false">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="uploadPacketeModalLabel">Upload Packet</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form #uploadPacketForm="ngForm" (ngSubmit)="onUploadPacket(uploadPacketForm)">
+          <div class="form-group">
+            <label for="name">Upload NAQT Packet PDF</label>
+            <input type="file" ngModel name="pdfUpload" class="form-control" id="pdfUpload" placeholder="NAQT PDF" required>
+          </div>
+          <div class="modal-footer">
+            <button type="button" id="add-packet-form" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button [disabled]="uploadPacketForm.invalid" type="submit" class="btn btn-primary">Upload PDF</button>
           </div>
         </form>
       </div>
