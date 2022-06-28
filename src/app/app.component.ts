@@ -1,10 +1,10 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { NgForm } from '@angular/forms';
-import { Question } from './Question';
-import { QuestionService } from './Question.service';
-import { Packet } from './Packet';
-import { PacketService } from './Packet.service';
+import { NgForm, FormArray, FormGroup, FormControl } from '@angular/forms';
+import { Question } from './Question-component/Question';
+import { QuestionService } from './Question-component/Question.service';
+import { Packet } from './Packet-component/Packet';
+import { PacketService } from './Packet-component/Packet.service';
 
 @Component({
   selector: 'app-root',
@@ -24,11 +24,26 @@ export class AppComponent implements OnInit{
   public localPacket: Packet | undefined;
   title: any;
 
+  public questionTemplateFormGroup = new FormGroup({
+    id: new FormControl(''),
+    answer: new FormControl(''),
+    bonusBeginningQuestion: new FormControl(''),
+    bonusLetter: new FormControl(''),
+    category: new FormControl(''),
+    packetNumber: new FormControl(''),
+    pointValue: new FormControl(''),
+    questionBody: new FormControl(''),
+    questionNumber: new FormControl(''),
+    questionType: new FormControl(''),
+    year: new FormControl(''),
+    title: new FormControl(''),
+    packetId: new FormControl('')
+  })
+
   constructor(private questionService: QuestionService, private packetService: PacketService) { }
 
   ngOnInit(): void {
       this.getQuestions();
-      this.getPackets();
   }
 
   public getBonusQuestions(): void{
@@ -57,19 +72,6 @@ export class AppComponent implements OnInit{
     this.questions = results;
     if (results.length === 0 || !key) {
       this.getQuestions();
-    }
-  }
-
-  public searchPackets(key: number): void {
-    const results: Packet[] = [];
-    for (const packet of this.packets) {
-      if (packet.packetNumber.toString().toLowerCase().indexOf(key.toString().toLowerCase()) !== -1) {
-        results.push(packet);
-      }
-    }
-    this.packets = results;
-    if (results.length === 0 || !key) {
-      this.getPackets();
     }
   }
 
@@ -174,59 +176,6 @@ export class AppComponent implements OnInit{
     }
   }
 
-  public getPackets(): void{
-    this.packetService.getPackets().subscribe(
-      (response: Packet[]) => {
-        this.packets = response;
-      },
-      (error: HttpErrorResponse) => {
-        alert(error.message);
-      }
-    );
-  }
-
-  public onAddPacket(addForm: NgForm): void {
-    document.getElementById('add-packet-form')?.click();
-    this.packetService.addPacket(addForm.value).subscribe(
-      (response: Packet) => {
-        console.log(response);
-        this.getPackets();
-        addForm.reset();
-      },
-      (error: HttpErrorResponse) => {
-        alert(error.message);
-        addForm.reset();
-      }
-    )
-  }
-
-  public onUpdatePacket(packet: Packet): void {
-    const id = packet.id;
-    console.log(packet)
-    this.packetService.updatePacket(packet, id).subscribe(
-      (response: Packet) => {
-        console.log(response, id);
-        this.getPackets();
-      },
-      (error: HttpErrorResponse) => {
-        alert(error.message);
-      }
-    )
-  }
-
-  public onDeletePacket(packetId: number | undefined): void {
-    if (packetId !== undefined){
-      this.packetService.deletePacket(packetId).subscribe(
-        (response: void) => {
-          this.getPackets();
-        },
-        (error: HttpErrorResponse) => {
-          alert(error.message);
-        }
-      )
-    }
-  }
-
   public onOpenModal(question: Question | null, mode: string): void {
     const container = document.getElementById('main-container');
     const button = document.createElement('button');
@@ -277,6 +226,9 @@ export class AppComponent implements OnInit{
     if (mode === 'delete' && packet !== null){
       this.deletePacket = packet;
       button.setAttribute('data-target', '#deletePacketModal')
+    }
+    if (mode === 'upload'){
+      button.setAttribute('data-target', '#uploadPacketModal')
     }
     container?.appendChild(button);
     button.click();
