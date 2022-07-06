@@ -1,10 +1,10 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { NgForm, FormArray, FormGroup, FormControl } from '@angular/forms';
-import { Question } from './Question-component/Question';
-import { QuestionService } from './Question-component/Question.service';
-import { Packet } from './Packet-component/Packet';
-import { PacketService } from './Packet-component/Packet.service';
+import { Question } from './Question';
+import { QuestionService } from './Question.service';
+import { Packet } from './Packet';
+import { PacketService } from './Packet.service';
 
 @Component({
   selector: 'app-root',
@@ -75,6 +75,19 @@ export class AppComponent implements OnInit{
     }
   }
 
+  public searchPackets(key: Number): void {
+    const results: Packet[] = [];
+    for (const packet of this.packets) {
+      if (packet.packetNumber.toString().indexOf(key.toString()) !== -1) {
+        results.push(packet);
+      }
+    }
+    this.packets = results;
+    if (results.length === 0 || !key) {
+      this.getPackets();
+    }
+  }
+
   public getFullQuestions(): void{
     this.questionService.getFullQuestions().subscribe(
       (response: Question[]) => {
@@ -90,6 +103,17 @@ export class AppComponent implements OnInit{
     this.questionService.getQuestions().subscribe(
       (response: Question[]) => {
         this.questions = response;
+      },
+      (error: HttpErrorResponse) => {
+        alert(error.message);
+      }
+    );
+  }
+
+  public getPackets(): void{
+    this.packetService.getPackets().subscribe(
+      (response: Packet[]) => {
+        this.packets = response;
       },
       (error: HttpErrorResponse) => {
         alert(error.message);
@@ -203,6 +227,66 @@ export class AppComponent implements OnInit{
     }
     container?.appendChild(button);
     button.click();
+  }
+
+  public onAddPacket(addForm: NgForm): void {
+    document.getElementById('add-packet-form')?.click();
+    this.packetService.addPacket(addForm.value).subscribe(
+      (response: Packet) => {
+        console.log(response);
+        this.getPackets();
+        addForm.reset();
+      },
+      (error: HttpErrorResponse) => {
+        alert(error.message);
+        addForm.reset();
+      }
+    )
+  }
+
+  public onUpdatePacket(packet: Packet): void {
+    this.packetService.updatePacket(packet, packet.id).subscribe(
+      (response: Packet) => {
+        this.getPackets();
+      },
+      (error: HttpErrorResponse) => {
+        alert(error.message);
+      }
+    )
+  }
+
+  public onDeletePacket(packetId: number | undefined): void {
+    if (packetId !== undefined){
+      this.packetService.deletePacket(packetId).subscribe(
+        (response: void) => {
+          this.getPackets();
+        },
+        (error: HttpErrorResponse) => {
+          alert(error.message);
+        }
+      )
+    }
+  }
+
+  public onUploadPacket(packetPdf: NgForm): void {
+    if (packetPdf !== undefined){
+
+      //Add Functionality to use localPacket
+
+      if (this.localPacket !== undefined){
+        this.packetService.addPacket(this.localPacket).subscribe(
+          (response: Packet) => {
+            console.log(response);
+            this.getPackets();
+            packetPdf.reset();
+          },
+          (error: HttpErrorResponse) => {
+            alert(error.message);
+            packetPdf.reset();
+          }
+        )
+      }
+    }
   }
 
   public onOpenPacketModal(packet: Packet | null, mode: string): void {

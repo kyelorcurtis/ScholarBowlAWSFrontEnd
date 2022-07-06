@@ -24,7 +24,6 @@ export class PacketService {
     }
 
     public updatePacket(packet : Packet, packetId: number): Observable<Packet> {
-        console.log("Right Here",packet.title,packetId)
         return this.http.put<Packet>(`${this.apiServerUrl}/api/packets/update/${packetId}`, packet);
     }
 
