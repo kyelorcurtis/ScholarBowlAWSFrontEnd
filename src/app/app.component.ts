@@ -1,6 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { NgForm, FormArray, FormGroup, FormControl } from '@angular/forms';
+import { NgForm, FormGroup, FormControl } from '@angular/forms';
 import { Question } from './Question';
 import { QuestionService } from './Question.service';
 import { Packet } from './Packet';
