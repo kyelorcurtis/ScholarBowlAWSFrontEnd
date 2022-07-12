@@ -11,6 +11,7 @@ import { PacketService } from './Packet.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
+
 export class AppComponent implements OnInit{
   public questions: Question[]=[];
   public packets: Packet[]=[];
@@ -22,6 +23,8 @@ export class AppComponent implements OnInit{
   public updatePacket: Packet | null | undefined;
   public deletePacket: Packet | null | undefined;
   public localPacket: Packet | undefined;
+  public addNew: boolean = false;
+  public stagedDeleteQuestions: Question[]=[];
   title: any;
 
   public questionTemplateFormGroup = new FormGroup({
@@ -44,6 +47,7 @@ export class AppComponent implements OnInit{
 
   ngOnInit(): void {
       this.getQuestions();
+      this.getPackets();
   }
 
   public getBonusQuestions(): void{
@@ -121,12 +125,16 @@ export class AppComponent implements OnInit{
     );
   }
 
-  public getQuestionsByPacket(): void{
-    const packetId = this.viewPacket?.id;
+  public getQuestionsByPacket(packetId: number, output: String): void{
     if(packetId !== undefined){
       this.questionService.getQuestionsByPacket(packetId).subscribe(
         (response: Question[]) => {
-          this.questions = response;
+          if (output === "questions"){
+            this.questions = response;
+          }
+          else if ( output === "staged"){
+            this.stagedDeleteQuestions = response;
+          }
         },
         (error: HttpErrorResponse) => {
           alert(error.message);
@@ -142,18 +150,20 @@ export class AppComponent implements OnInit{
         this.localPacket = packet;
       }
     }
-    console.log(addForm.value, this.localPacket)
     if (this.localPacket !== undefined){
       addForm.controls['title'].setValue(this.localPacket.title);
       addForm.controls['year'].setValue(this.localPacket.year);
       addForm.controls['packetNumber'].setValue(this.localPacket.packetNumber);
     }
-    console.log(addForm.value, this.localPacket)
     this.questionService.addQuestion(addForm.value).subscribe(
       (response: Question) => {
         console.log(response);
         this.getQuestions();
         addForm.reset();
+        if (this.addNew){
+          this.onOpenModal(null, 'add');
+          this.addNew = false;
+        }
       },
       (error: HttpErrorResponse) => {
         alert(error.message);
@@ -234,6 +244,7 @@ export class AppComponent implements OnInit{
     this.packetService.addPacket(addForm.value).subscribe(
       (response: Packet) => {
         console.log(response);
+        this.localPacket = response;
         this.getPackets();
         addForm.reset();
       },
@@ -268,24 +279,44 @@ export class AppComponent implements OnInit{
     }
   }
 
+  public onDeleteFullPacket(packetId: number | undefined): void {
+    if ( packetId !== undefined){
+      this.getQuestionsByPacket(packetId, "staged")
+    }
+    if (packetId !== undefined){
+      this.packetService.deletePacket(packetId).subscribe(
+        (response: void) => {
+          for (const question of this.stagedDeleteQuestions){
+            this.onDeleteQuestion(question.id);
+          }
+          this.getPackets();
+        },
+        (error: HttpErrorResponse) => {
+          alert(error.message);
+        }
+      )
+    }
+  }
+
   public onUploadPacket(packetPdf: NgForm): void {
     if (packetPdf !== undefined){
 
+      
       //Add Functionality to use localPacket
 
-      if (this.localPacket !== undefined){
-        this.packetService.addPacket(this.localPacket).subscribe(
-          (response: Packet) => {
-            console.log(response);
-            this.getPackets();
-            packetPdf.reset();
-          },
-          (error: HttpErrorResponse) => {
-            alert(error.message);
-            packetPdf.reset();
-          }
-        )
-      }
+      // if (this.localPacket !== undefined){
+      //   this.packetService.addPacket(this.localPacket).subscribe(
+      //     (response: Packet) => {
+      //       console.log(response);
+      //       this.getPackets();
+      //       packetPdf.reset();
+      //     },
+      //     (error: HttpErrorResponse) => {
+      //       alert(error.message);
+      //       packetPdf.reset();
+      //     }
+      //   )
+      // }
     }
   }
 
@@ -300,7 +331,7 @@ export class AppComponent implements OnInit{
     }
     if (mode === 'view' && packet !== null){
       this.viewPacket = packet;
-      this.getQuestionsByPacket();
+      this.getQuestionsByPacket(this.viewPacket.id, "questions");
       button.setAttribute('data-target', '#viewPacketModal')
     }
     if (mode === 'edit' && packet !== null){

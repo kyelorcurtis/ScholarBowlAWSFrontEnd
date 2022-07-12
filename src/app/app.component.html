@@ -383,7 +383,7 @@
         <form #addForm="ngForm" (ngSubmit)="onAddQuestion(addForm)">
           <div class="form-group">
             <label for="phone">Associated Packet</label><br>
-            <input type="text" ngModel name="packetId" id="packetId" list="typeOptionsPackets" placeholder="Required" required>
+            <input type="text" ngModel="{{localPacket?.id}}" name="packetId" id="packetId" list="typeOptionsPackets" placeholder="Required" required>
             <datalist id="typeOptionsPackets">
               <option *ngFor="let packet of packets" value="{{packet.id}}">{{packet.year}} {{packet.title}} {{packet.packetNumber}}</option>
             </datalist>
@@ -440,6 +440,10 @@
           </div>
           <div class="modal-footer">
             <button type="button" id="add-question-form" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button [disabled]="addForm.invalid" type="submit"  class="btn btn-circle btn-success text-white" (click)="addNew = true" data-toggle="modal" data-target="#addQuestionModal">
+              <i class="fa fa-plus"></i>
+              Add Question
+            </button>
             <button [disabled]="addForm.invalid" type="submit" class="btn btn-primary">Save changes</button>
           </div>
         </form>
@@ -612,14 +616,6 @@
   </div>
 </div>
 
-<!-- Notification for no questions -->
-<div *ngIf="questions?.length == 0" class="col-lg-12 col-md-12 col-xl-12">
-  <div class="alert alert-info" role="alert">
-    <h4 class="alert-heading">NO QUESTIONS!</h4>
-    <p>No Questions were found.</p>
-  </div>
-</div>
-
 <!-- Edit Packet Modal -->
 <div class="modal fade" id="updatePacketModal" tabindex="-1" role="dialog" aria-labelledby="packetEditModalLabel"
   aria-hidden="true">
@@ -676,7 +672,8 @@
         <p>Are you sure you want to delete<b> {{deletePacket?.year}} {{deletePacket?.title}} Packet {{deletePacket?.packetNumber}}</b>?</p>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
-          <button (click)="onDeletePacket(deletePacket?.id)" class="btn btn-danger" data-dismiss="modal">Yes</button>
+          <button (click)="onDeletePacket(deletePacket?.id)" class="btn btn-danger" data-dismiss="modal">Packet Only</button>
+          <button (click)="onDeleteFullPacket(deletePacket?.id)" class="btn btn-warning" data-dismiss="modal">Packet and Questions</button>
         </div>
       </div>
     </div>
@@ -711,7 +708,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" id="add-packet-form" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="button"  class="btn btn-circle btn-success text-white">
+            <button [disabled]="addPacketForm.invalid" type="submit"  class="btn btn-circle btn-success text-white" (click)="onOpenModal(null, 'add')" data-toggle="modal" data-target="#addQuestionModal">
               <i class="fa fa-plus"></i>
               Add Question
             </button>
@@ -726,7 +723,7 @@
 <!-- Upload Packet Modal -->
 <div class="modal fade" id="uploadPacketModal" tabindex="-1" role="dialog" aria-labelledby="uploadPacketModalLabel"
   aria-hidden="false">
-  <div class="modal-dialog" role="document">
+  <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="uploadPacketeModalLabel">Upload Packet</h5>
